@@ -9,7 +9,7 @@ root = tree.getroot()
 insert = "INSERT INTO Correlation VALUES"
 
 if __name__ == "__main__":
-    insert_file = "USE RareDiagnosticsDB\n\n"
+    insert_file = "USE RareDiagnostics;\n\n"
     correlations = []
 
     for disorder in root[1]:
@@ -19,6 +19,8 @@ if __name__ == "__main__":
 
         for symptom in disorder[0][5]:
             hp = symptom[0][0].text
+            if hp ==  "HP:0008220":
+                continue
             name = symptom[0][1].text
             frequencytext = symptom[1][0].text
 

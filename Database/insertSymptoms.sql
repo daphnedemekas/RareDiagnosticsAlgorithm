@@ -1,4 +1,4 @@
-USE RareDiagnosticsDB
+USE RareDiagnostics;
 
 INSERT INTO Symptom VALUES('HP:0000001', 'All', ''),
 ('HP:0000002', 'Abnormality of body height', 'Deviation from the norm of height with respect to that which is expected according to age and gender norms.'),
@@ -15332,4 +15332,4 @@ INSERT INTO Symptom VALUES('HP:0000001', 'All', ''),
 ('HP:3000077', 'Abnormal mandible condylar process morphology', 'An abnormality of a mandible condylar process.'),
 ('HP:3000078', 'Abnormal mandible coronoid process morphology', 'An abnormality of a mandible coronoid process.'),
 ('HP:3000079', 'Abnormality of mandibular symphysis', 'A structural abnormality of a mandibular symphysis.'),
-;
+('HP:0001578', 'Hypercortisolism', 'Overproduction of the hormone of cortisol by the adrenal cortex, resulting in a characteristic combination of clinical symptoms termed Cushing syndrome, with truncal obesity, a round, full face, striae atrophicae and acne, muscle weakness, and other features.'),('HP:0200115', 'Scalp hair loss', '');

@@ -18,7 +18,7 @@ generalroot = generaltree.getroot()
 insert = "INSERT INTO Disease VALUES"
 
 if __name__ == "__main__":
-    insert_file = "USE RareDiagnosticsDB\n\n"
+    insert_file = "USE RareDiagnostics;\n\n"
 
     for disorder in generalroot[1]:
         orpha = disorder[0].text

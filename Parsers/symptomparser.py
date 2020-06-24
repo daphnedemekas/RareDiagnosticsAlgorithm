@@ -12,13 +12,17 @@ insertsuperclasses = "INSERT INTO SymptomInheritance VALUES"
 
 if __name__ == "__main__":
 
-    insert_file1 = "USE RareDiagnosticsDB\n\n"
-    insert_file2 = "USE RareDiagnosticsDB\n\n"
+    insert_file1 = "USE RareDiagnostics;\n\n"
+    insert_file2 = "USE RareDiagnostics;\n\n"
 
     for key in keys:
         entry = data.get(key)
 
         hp = entry.get("id")
+        #synonms we already have
+        if hp ==  "HP:0008220":
+            continue
+
         symptom = entry.get("name")
         definition = entry.get("desc")
 
@@ -38,8 +42,14 @@ if __name__ == "__main__":
                 insert_row2 = "('{}', '{}'),".format(hp, sb)
                 insertsuperclasses += insert_row2 + "\n"
 
-    insert_file1 += insertsymptoms + ";"
-    insert_file2 += insertsuperclasses + ";"
+    insert_file1 += insertsymptoms
+    #additional symptoms we need to add
+    insert_file1 += "('HP:0001578', 'Hypercortisolism', 'Overproduction of the hormone of cortisol by the adrenal cortex, resulting in a characteristic combination of clinical symptoms termed Cushing syndrome, with truncal obesity, a round, full face, striae atrophicae and acne, muscle weakness, and other features.'),"
+    insert_file1 += "('HP:0200115', 'Scalp hair loss', '')" + ";"
+
+    insert_file2 += insertsuperclasses
+    #additional relations we need to add
+    insert_file2 += "('HP:0002717', 'HP:0001578')," + "\n" + "('HP:0011731', 'HP:0001578')," + "\n" + "('HP:0001578', 'HP:0011744')," +"\n" + "('HP:0001578', 'HP:0025436')," + "\n" + "('HP:0001578', 'HP:0001579')" + ";"
 
     with open("Database/insertSymptoms.sql", "w+") as file:
         file.write(insert_file1)

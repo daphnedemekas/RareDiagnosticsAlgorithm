@@ -1,27 +1,4 @@
 
-function getSymptoms(db) {
-  var symptoms = [];
-  db.query("SELECT * FROM Symptom", function (err, rows, fields) {
-  if (err) throw err;
-    rows.forEach( (row) => {
-    symptoms.push(`${row.id}  ${row.symptom_name}`);
-    });
-});
-return symptoms
-}
-
-function getDiseases() {
-  var diseases = []
-    db.query("SELECT * FROM Disease", function (err, rows, fields) {
-      if (err) throw err;
-      rows.forEach( (row) => {
-      diseases.push(`${row.orpha_number}  ${row.disease_name}`);
-    });
-});
-return diseases
-db.end()
-}
-
 function makeQuery(db, q, query_str, element1, element2, element3)
 {
   list = []
@@ -47,22 +24,10 @@ function makeQuery(db, q, query_str, element1, element2, element3)
       }
     });
     db.end()
-
  //var query = connection.query(query_str, function (err, rows, fields) {
 return deferred.promise;
 }
 
-
-function getSymptomInheritance() {
-  var inheritance = []
-    db.query("SELECT * FROM SymptomInheritance", function (err, rows, fields) {
-      if (err) throw err;
-      rows.forEach( (row) => {
-      inheritance.push(`${row.superclass_id} ${row.sublcass_id} `);
-    });
-});
-return inheritance;
-}
 // [disease, symptom, frequency]
 function getCorrelationMatrix(correlations) {
   var matrix = [];
@@ -81,13 +46,30 @@ function getCorrelationMatrix(correlations) {
       count += 1;
       matrix.push(entry);
       entry = [correlation[0]];
-      entry.push(correlation[0])
     }
   }
   return matrix;
   }
 
+function getWeights(correlations) {
+  let counts = new Map();
+  let count = 0;
+  let total = correlations.length;
+  for (var correlation of correlations) {
+    count += 1;
+    var hp = correlation[1];
+    if (counts.has(hp)) {
+      counts.set(hp, (counts.get(hp)*total+1)/total);
+    }
+    else {
+      counts.set(hp, 1/total);
+    }
+  }
+  return counts;
+}
+
 module.exports = {
     getCorrelationMatrix,
     makeQuery,
+    getWeights
 };

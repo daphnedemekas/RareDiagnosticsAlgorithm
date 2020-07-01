@@ -2,8 +2,6 @@ import xml.etree.ElementTree as ET
 from urllib.request import urlopen
 import os
 
-os.chdir("/Users/daphnedemekas/Desktop/Rare Diagnostics/RareDiagnosticsAlgorithm")
-
 tree = ET.parse(urlopen("http://www.orphadata.org/data/xml/en_product4.xml"))
 root = tree.getroot()
 insert = "INSERT INTO Correlation VALUES"

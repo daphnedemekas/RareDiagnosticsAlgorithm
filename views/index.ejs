@@ -6,6 +6,11 @@
   </head>
   <body>
     <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <p><% for(let a of symptoms){ %>
+
+    <p> <%= a %> </p>
+    </br>
+<% } %>
+</p>
   </body>
 </html>

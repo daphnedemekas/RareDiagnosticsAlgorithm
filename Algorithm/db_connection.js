@@ -1,6 +1,6 @@
 var mysql = require('mysql');
 
-if (process.env.NODE_ENV != 'prod') {
+if (process.env.NODE_ENV != 'prod' && !process.env.IS_AWS) {
   require('dotenv').config();
 }
 

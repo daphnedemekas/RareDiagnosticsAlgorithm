@@ -1,9 +1,13 @@
 var mysql = require('mysql');
 
+if (process.env.NODE_ENV != 'prod') {
+  require('dotenv').config();
+}
+
 var connection = mysql.createConnection({
-  host: "localhost",
-  user: "axel",
-  password: "pass",
+  host: process.env.SQL_HOST,
+  user: process.env.SQL_USER,
+  password: process.env.SQL_PASSWORD,
   database: "RareDiagnostics",
   connectionLimit: 5
 });

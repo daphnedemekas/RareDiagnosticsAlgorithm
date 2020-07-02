@@ -1,4 +1,6 @@
 
+// this function makes a general query to the SQL database
+// returns a promise
 function makeQuery(db, q, query_str, element1, element2, element3)
 {
    list = []
@@ -23,12 +25,11 @@ function makeQuery(db, q, query_str, element1, element2, element3)
         deferred.resolve(list);
       }
     });
-    //db.end()
- //var query = connection.query(query_str, function (err, rows, fields) {
+
 return deferred.promise;
 }
 
-// [disease, symptom, frequency]
+//this function returns a matrix of correlation = [disease, symptom, frequency]
 function getCorrelationMatrix(correlations) {
   var matrix = [];
   var disease = correlations[0][0];

@@ -1,8 +1,14 @@
 
-function likelihood(inputsymptoms, db, gD, matrix, weights, inheritance, symptoms)  {
+// likelihood function takes the input symptoms of the patient
+// and returns a Map of key value pairs
+// Key = the likelihood of a specific disease given those Symptoms
+// Value = the orpha number of the disease
+    // this is because we can then get the disease back given its likelihood (in calculate) since we only
+    // want the diseases with the highest likelihoods
+function likelihood(inputsymptoms, database, getdata_controller, matrix, inheritance, symptoms)  {
 
-  var likelihoodMap = new Map();
-  let totalsymptomcount = 0;
+  var likelihood_map = new Map();
+  let total_symptomcount = 0;
   let input = [];
   for (i of inputsymptoms) {
     input.push(symptoms.get(i));
@@ -27,6 +33,7 @@ function likelihood(inputsymptoms, db, gD, matrix, weights, inheritance, symptom
     for (const symptom of correlation.slice(1)) {
       // symptom = [HP, frequency]
       frequencysum += parseFloat(symptom[1]);
+
       if (input.includes(symptom[0])) {
         matches += 1;
         frequency += parseFloat(symptom[1]);
@@ -35,7 +42,6 @@ function likelihood(inputsymptoms, db, gD, matrix, weights, inheritance, symptom
 // // NOTE:
 // I would say let's only do this on the first round. if they then specify the symptoms we suggest,
 // we no longer take into account the superclasses
-
       else if (superclasses.includes(symptom[0])) {
       matches += 1;
         frequency += parseFloat(symptom[1]);
@@ -44,29 +50,27 @@ function likelihood(inputsymptoms, db, gD, matrix, weights, inheritance, symptom
       else if (subclasses.includes(symptom[0]) && !return_subclass.includes(symptoms.get(symptom[0]))) {
         return_subclass.push(symptoms.get(symptom[0]))
       }
-
-      else {
-        importance *= weights.get(symptom[0]);
-      }
     }
     if (matches != 0) {
-
-      let likelihood = (frequency / frequencysum) * (matches/num_input) * importance;
-
-      likelihoodMap.set(likelihood, correlation[0])
+      let likelihood = (frequency / frequencysum) * (matches/num_input);
+      likelihood_map.set(likelihood, correlation[0])
     }
   }
 
-
-
+  // want to ask about the subclasses of symptoms that were inputted
+  // after the user selects any subclasses the code would be run again
+  // but would not take into account symptom superclasses anymore
   console.log("do you have any of the following symptoms? " + return_subclass )
-  return likelihoodMap;
+  return likelihood_map;
 }
 
+// currently we do not have any prior (uninformative prior)
 function prior() {
   return 1;
 }
 
+// this takes the input symptom of the user and the inheritance map of the Symptoms
+// and returns a list of all of the subclasses of the inputted symptoms
 function subclasses(inputsymptoms, inheritance) {
   let subclasses = [];
   for (i of inheritance) {
@@ -77,6 +81,8 @@ function subclasses(inputsymptoms, inheritance) {
   return subclasses;
 }
 
+// this takes the input symptoms of the user and the inheritance map of the Symptoms
+// and returns a list of all of the superclasses of the inputted symptoms
 function superclasses(inputsymptoms, inheritance) {
   let superclasses = [];
   for (i of inheritance) {
@@ -87,6 +93,11 @@ function superclasses(inputsymptoms, inheritance) {
   return superclasses;
 }
 
+// this takes in all diseases and their Symptoms
+// and returns a key value map
+// key = a symptom
+// value = the "weight" of the symptom calculated by (how many diseases have that symptom / total number of Diseases)
+// we are currently not using this
 function weights(correlations) {
   let counts = new Map();
   let count = 0;

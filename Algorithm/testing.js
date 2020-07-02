@@ -1,7 +1,5 @@
 var queries = require('./Algorithm/queries');
 var q = require('q');
-var db = require('./Algorithm/db_connection')
-var gD = require('./Algorithm/getData');
-var bm = require('./Algorithm/bayesionmodel');
-
-queries.getSymptoms(db, q, gD);
+var database = require('./Algorithm/db_connection')
+var getdata_controller = require('./Algorithm/getData');
+var bayesionmodel = require('./Algorithm/bayesionmodel');

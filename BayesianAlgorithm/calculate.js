@@ -1,13 +1,12 @@
 // problem is we always get diseases with very few symtpms
 // want to emphasize similar symptoms over few symptoms
-var queries = require('./BayesianAlgorithm(1)/queries');
+var queries = require('./BayesianAlgorithm/queries');
 var q = require('q');
-var database = require('./BayesianAlgorithm(1)/db_connection')
-var getdata_controller = require('./BayesianAlgorithm(1)/getData');
-var bayesionmodel = require('./BayesianAlgorithm(1)/bayesionmodel');
+var database = require('./BayesianAlgorithm/db_connection')
+var getdata_controller = require('./BayesianAlgorithm/getData');
+var bayesionmodel = require('./BayesianAlgorithm/bayesionmodel');
 
-let inputsymptoms = ['Arthritis', 'Fever', 'Anorexia', 'Immunodeficiency', 'Arthralgia', 'Erythema', 'Neutrophilia', 'Hepatitis','Pharyngitis']
-
+let inputsymptoms =["Abnormality of skin pigmentation", 'Skin rash', 'Erythematous papule', "Abnormality of the nail", "Macule", 'Erythema', 'White papule', "Recurrent skin infection", 'Maceration', 'Hyperkeratotic papule', 'Acantholysis', 'Papule']
 queries.getSymptoms(database, q, getdata_controller).then(function(query) {
   let symptoms = query;
 
@@ -46,9 +45,9 @@ queries.getCorrelations(database, q, getdata_controller).then(function(query) {
 
     let count = 0;
 
-    for (var i=0; i< 100; i++) {
+    for (var i=0; i< 1000; i++) {
       count += 1;
-      if (diseases.get(posterior.get(values[i])) == "Adult-onset Still disease")  {
+      if (diseases.get(posterior.get(values[i])) == "Darier disease")  {
         console.log(count)
       }
     }

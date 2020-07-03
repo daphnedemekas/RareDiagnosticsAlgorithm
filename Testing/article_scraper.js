@@ -2,10 +2,10 @@ var cheerio = require('cheerio');
 var request = require('request');
 // var read = require('node-readability');
 var urlParser = require('url');
-var queries = require('./BayesianAlgorithm/queries');
 var q = require('q');
 var database = require('./BayesianAlgorithm/db_connection')
 var getdata_controller = require('./BayesianAlgorithm/getData');
+var bayesionmodel = require('./BayesianAlgorithm/bayesionmodel');
 
 //Very specific scraper, but the code is flexible. Load the 'Case Presentation' section
 //of a Cureus article.
@@ -28,9 +28,7 @@ Scraper.prototype.scrape = function(callback){
         if (!error) {
           var $ = cheerio.load(data);
           var article = $("div.article-content-body:nth-child(4)");
-          console.log(article)
           var casepresentation = article.text();
-          console.log(article.text())
           callback(null,casepresentation);
         }
         else {
@@ -41,8 +39,8 @@ Scraper.prototype.scrape = function(callback){
   }
 }
 
-var scraper = new Scraper("https://www.cureus.com/articles/31800-adult-onset-stills-disease-typical-presentation-delayed-diagnosis");
-scraper.scrape(function(error,data){
+var scraper = new Scraper("https://www.cureus.com/articles/25344-darier-disease---a-clinical-illustration-of-its-high-variable-expressivity")
+  scraper.scrape(function(error,data){
   let returnsymptoms = []
   getSymptomsList(database, q, getdata_controller).then(function(query) {
     let symptoms = query;

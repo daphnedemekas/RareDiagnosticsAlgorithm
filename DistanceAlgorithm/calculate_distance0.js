@@ -5,11 +5,9 @@ var getdata_controller = require('./BayesianAlgorithm/getData');
 var bayesionmodel = require('./BayesianAlgorithm/bayesionmodel');
 var distance = require('euclidean-distance')
 
-let inputsymptoms = ['Arthritis', 'Fever', 'Anorexia', 'Immunodeficiency', 'Arthralgia', 'Erythema', 'Neutrophilia', 'Hepatitis','Pharyngitis']
+let inputsymptoms = ["Abnormality of skin pigmentation", 'Skin rash', 'Erythematous papule', "Abnormality of the nail", "Macule", 'Erythema', 'White papule', "Recurrent skin infection", 'Maceration', 'Hyperkeratotic papule', 'Acantholysis', 'Papule']
 
-
-
-queries.getSymptoms(database, q, getdata_controller).then(function(query) {
+  queries.getSymptoms(database, q, getdata_controller).then(function(query) {
   let symptoms = query;
 
 queries.getDiseases(database, q, getdata_controller).then(function(query) {
@@ -24,22 +22,31 @@ queries.getCorrelations(database, q, getdata_controller).then(function(query) {
     let matrix = getdata_controller.getCorrelationMatrix(correlations);
 
     var diseaselist = []
-
     var input = [];
     for (i of inputsymptoms) {
       input.push(symptoms.get(i));
     }
 
+    let superclasses = bayesionmodel.superclasses(input, inheritance);
+    let subclasses = bayesionmodel.subclasses(input, inheritance);
+    let return_subclass = [];
+
     // symptom matrix is a vector of 1.5s
+    var symptom_vector = []
+    for (const symptom of inputsymptoms) {symptom_vector.push(1.5)}
 
     for (correlation of matrix) {
-      var symptom_vector = []
-      for (const symptom of inputsymptoms) {symptom_vector.push(1.5)}
       var disease_vector = []
+      let matches = 0;
+      let frequencysum = 0;
+      let f = 0;
 
       for (const symptom of correlation.slice(1)) {
+        frequencysum += parseFloat(symptom[1]);
         // symptom = [HP, frequency]
-        if (input.includes(symptom[0])) {
+        if (input.includes(symptom[0]) || superclasses.includes(symptom[0])) {
+          f += parseFloat(symptom[1]);
+          matches += 1;
           let frequency = parseFloat(symptom[1]);
           if (frequency == 0.895) {
             disease_vector.push(3);
@@ -51,36 +58,34 @@ queries.getCorrelations(database, q, getdata_controller).then(function(query) {
             disease_vector.push(1);
           }
         }
-        else {
-          disease_vector.push(0);
-        }
-
-      }
-
-      if (disease_vector.length == 0) {
-        disease_vector.push(0)
-      }
-
-      for (var i=0; i < (correlation.slice(1).length - input.length); i++ ) {symptom_vector.push(0)}
-
-
-      if (disease_vector[0] != 0) {
-      var d = (distance(disease_vector, symptom_vector))^(2/500);
-      console.log(d)
-      diseaselist.push([correlation[0],d])
+        else if (subclasses.includes(symptom[0]) && !return_subclass.includes(symptoms.get(symptom[0]))) {
+        return_subclass.push(symptoms.get(symptom[0]))
       }
     }
+      let num_zeros = symptom_vector.length - disease_vector.length;
+
+      for (var i=0; i < num_zeros; i++ ) { disease_vector.push(0) }
+
+      if (disease_vector[0] != 0) {
+        let d = distance(disease_vector, symptom_vector);
+        let likelihood = (matches/symptom_vector.length)*(f/frequencysum);
+        let result = d*(1-likelihood);
+        diseaselist.push([correlation[0],result])
+        }
+    }
+
+    console.log("do you have any of the following symptoms? " + return_subclass )
 
     diseaselist.sort(function(a,b){return a[1] - b[1];});
-    for (var i=0; i< 35; i++) {
+    for (var i=0; i< 10; i++) {
       console.log(diseases.get(diseaselist[i][0]));
     }
 
     let count = 0;
 
-    for (var i=0; i< 35; i++) {
+    for (var i=0; i< diseaselist.length; i++) {
       count += 1;
-      if (diseases.get(diseaselist[i][0]) == "Adult-onset Still disease")  {
+      if (diseases.get(diseaselist[i][0]) == "Darier disease")  {
         console.log(count)
       }
     }
@@ -88,7 +93,6 @@ queries.getCorrelations(database, q, getdata_controller).then(function(query) {
     database.end();
 
   });
-
 });
 });
 });

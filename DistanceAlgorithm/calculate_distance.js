@@ -5,9 +5,8 @@ var getdata_controller = require('./BayesianAlgorithm/getData');
 var bayesionmodel = require('./BayesianAlgorithm/bayesionmodel');
 var distance = require('euclidean-distance')
 
-let inputsymptoms = ['Arthritis', 'Fever', 'Anorexia', 'Immunodeficiency', 'Arthralgia', 'Erythema', 'Neutrophilia', 'Hepatitis','Pharyngitis']
-
-queries.getSymptoms(database, q, getdata_controller).then(function(query) {
+let inputsymptoms = ["Abnormality of skin pigmentation", 'Skin rash', 'Erythematous papule', "Abnormality of the nail", "Macule", 'Erythema', 'White papule', "Recurrent skin infection", 'Maceration', 'Hyperkeratotic papule', 'Acantholysis', 'Papule']
+  queries.getSymptoms(database, q, getdata_controller).then(function(query) {
   let symptoms = query;
 
 queries.getDiseases(database, q, getdata_controller).then(function(query) {
@@ -22,11 +21,15 @@ queries.getCorrelations(database, q, getdata_controller).then(function(query) {
     let matrix = getdata_controller.getCorrelationMatrix(correlations);
 
     var diseaselist = []
-
     var input = [];
+
     for (i of inputsymptoms) {
       input.push(symptoms.get(i));
     }
+
+    let superclasses = bayesionmodel.superclasses(input, inheritance);
+    let subclasses = bayesionmodel.subclasses(input, inheritance);
+    let return_subclass = [];
 
     // symptom matrix is a vector of 1.5s
     var symptom_vector = []
@@ -37,7 +40,7 @@ queries.getCorrelations(database, q, getdata_controller).then(function(query) {
 
       for (const symptom of correlation.slice(1)) {
         // symptom = [HP, frequency]
-        if (input.includes(symptom[0])) {
+        if (input.includes(symptom[0]) || superclasses.includes(symptom[0])) {
           let frequency = parseFloat(symptom[1]);
           if (frequency == 0.895) {
             disease_vector.push(3);
@@ -49,23 +52,23 @@ queries.getCorrelations(database, q, getdata_controller).then(function(query) {
             disease_vector.push(1);
           }
         }
-
+        else if (subclasses.includes(symptom[0]) && !return_subclass.includes(symptoms.get(symptom[0]))) {
+        return_subclass.push(symptoms.get(symptom[0]))
       }
-      // need to fill in the vectors
+    }
 
-      // symptom vector = 5 input symptoms
-      // disease vector = 3 matches
+      let num_zeros = symptom_vector.length - disease_vector.length;
 
-      // s = 1.5 1.5 1.5 1.5 1.5
-      // d = 1   2   3    0   0
-
-      for (var i=1; i < symptom_vector.length - disease_vector.length; i++ ) { disease_vector.push(0) }
+      for (var i=0; i < num_zeros; i++ ) { disease_vector.push(0) }
 
       if (disease_vector[0] != 0) {
-        var d = (distance(disease_vector, symptom_vector))^(2/500);
+        var d = distance(disease_vector, symptom_vector);
         diseaselist.push([correlation[0],d])
         }
     }
+
+    console.log("do you have any of the following symptoms? " + return_subclass )
+
     diseaselist.sort(function(a,b){return a[1] - b[1];});
     for (var i=0; i< 10; i++) {
       console.log(diseases.get(diseaselist[i][0]));
@@ -73,9 +76,9 @@ queries.getCorrelations(database, q, getdata_controller).then(function(query) {
 
     let count = 0;
 
-    for (var i=0; i< 300; i++) {
+    for (var i=0; i< diseaselist.length; i++) {
       count += 1;
-      if (diseases.get(diseaselist[i][0]) == "Adult-onset Still disease")  {
+      if (diseases.get(diseaselist[i][0]) == "Darier disease")  {
         console.log(count)
       }
     }
@@ -83,7 +86,6 @@ queries.getCorrelations(database, q, getdata_controller).then(function(query) {
     database.end();
 
   });
-
 });
 });
 });

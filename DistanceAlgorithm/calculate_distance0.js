@@ -1,8 +1,8 @@
-var queries = require('./BayesianAlgorithm(1)/queries');
+var queries = require('./BayesianAlgorithm/queries');
 var q = require('q');
-var database = require('./BayesianAlgorithm(1)/db_connection')
-var getdata_controller = require('./BayesianAlgorithm(1)/getData');
-var bayesionmodel = require('./BayesianAlgorithm(1)/bayesionmodel');
+var database = require('./BayesianAlgorithm/db_connection')
+var getdata_controller = require('./BayesianAlgorithm/getData');
+var bayesionmodel = require('./BayesianAlgorithm/bayesionmodel');
 var distance = require('euclidean-distance')
 
 let inputsymptoms = ['Arthritis', 'Fever', 'Anorexia', 'Immunodeficiency', 'Arthralgia', 'Erythema', 'Neutrophilia', 'Hepatitis','Pharyngitis']
@@ -56,7 +56,7 @@ queries.getCorrelations(database, q, getdata_controller).then(function(query) {
         }
 
       }
-      
+
       if (disease_vector.length == 0) {
         disease_vector.push(0)
       }
@@ -65,7 +65,7 @@ queries.getCorrelations(database, q, getdata_controller).then(function(query) {
 
 
       if (disease_vector[0] != 0) {
-      var d = distance(disease_vector, symptom_vector);
+      var d = (distance(disease_vector, symptom_vector))^(2/500);
       console.log(d)
       diseaselist.push([correlation[0],d])
       }

@@ -8,6 +8,7 @@ var bayesionmodel = require('./Algorithm/bayesionmodel');
 
 let inputsymptoms = ["Abnormality of skin pigmentation", 'Skin rash', 'Erythematous papule', "Abnormality of the nail", "Macule", 'Erythema', 'White papule', "Recurrent skin infection", 'Maceration', 'Hyperkeratotic papule', 'Acantholysis', 'Papule']
 
+
 queries.getSymptoms(database, q, getdata_controller).then(function(query) {
   let symptoms = query;
 
@@ -37,8 +38,14 @@ queries.getCorrelations(database, q, getdata_controller).then(function(query) {
 
     values.sort(function(a, b){  return b - a;});
 
-      // we print the 10 most likely diseases
+    // Axel'ls rambling: The posterior object is a dictionary which contains the
+    // likelihood as key and the disease (Orhpanet number? name?) as value.
+    // The keys are then sorted in descending order.
+    // Following this, we pull the top 10 diseases in order.
+    // we print the 10 most likely diseases
+
     for (var i=0; i< 10; i++) {
+      console.log(diseases)
       console.log(diseases.get(posterior.get(values[i])));
       //console.log(values[i])
     }
@@ -46,6 +53,8 @@ queries.getCorrelations(database, q, getdata_controller).then(function(query) {
 
     let count = 0;
 
+    // This prints the rank of the current disease we are testing against
+    // the algorithm ranking. The name of the disease here has to be changed by hand.
     for (var i=0; i< 1000; i++) {
       count += 1;
       if (diseases.get(posterior.get(values[i])) == "Darier disease")  {

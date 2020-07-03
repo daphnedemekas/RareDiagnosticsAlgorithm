@@ -27,7 +27,7 @@ Scraper.prototype.scrape = function(callback){
     request({uri: this.url, jar: true, headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'}}, function (error, response, data) {
         if (!error) {
           var $ = cheerio.load(data);
-          var article = $("div.article-content-body").first();
+          var article = $("div.article-content-body:nth-child(4)");
           var casepresentation = article.text();
           callback(null,casepresentation);
         }

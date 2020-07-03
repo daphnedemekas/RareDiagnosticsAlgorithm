@@ -6,11 +6,37 @@
   </head>
   <body>
     <h1><%= title %></h1>
-    <p><% for(let a of symptoms){ %>
-
-    <p> <%= a %> </p>
-    </br>
-<% } %>
-</p>
+    <form method="post" action="/">
+      Please enter a list of symptoms separated by a comma. Example: "pain, fever".
+      <input type="text" name="symptoms"/>
+      <br/>
+      If you know the OrphaNet ID of the disease you are testing against, enter it here:
+      <input type="text" name="disease_number"/>
+      <br/>
+      <input type="submit" value="Submit"/>
+    </form>
+    <% if(typeof diseases != 'undefined') { %>
+      <table>
+        <tr>
+          <th>Rank</th>
+          <th>Disease Name</th>
+          <th>Associated Symptoms</th>
+        </tr>
+        <% for(var i=0; i<diseases.length; i++) {%>
+          <tr>
+            <th><%= i+1 %></th>
+            <th><%= diseases[i] %></th>
+          </tr>
+        <% } %>
+      </table>
+    <% } %>
+    <p>
+      The disease you are testing has the following symptoms associated to it:
+      <ul>
+        <% for(var i=0; i< test_disease.length; i++) {%>
+          <li><%= test_disease[i] %></li>
+        <% } %>
+      </ul>
+    </p>
   </body>
 </html>

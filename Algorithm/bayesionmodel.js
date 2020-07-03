@@ -1,3 +1,8 @@
+console.log(__dirname)
+var queries = require(__dirname+'/queries');
+var q = require('q');
+var database = require(__dirname+'/db_connection')
+var getdata_controller = require(__dirname+'/getData');
 
 // likelihood function takes the input symptoms of the patient
 // and returns a Map of key value pairs
@@ -5,12 +10,12 @@
 // Value = the orpha number of the disease
     // this is because we can then get the disease back given its likelihood (in calculate) since we only
     // want the diseases with the highest likelihoods
-function likelihood(inputsymptoms, database, getdata_controller, matrix, inheritance, symptoms)  {
+function likelihood(input_symptoms, database, getdata_controller, matrix, inheritance, symptoms)  {
 
   var likelihood_map = new Map();
   let total_symptomcount = 0;
   let input = [];
-  for (i of inputsymptoms) {
+  for (i of input_symptoms) {
     input.push(symptoms.get(i));
   }
 
@@ -71,10 +76,10 @@ function prior() {
 
 // this takes the input symptom of the user and the inheritance map of the Symptoms
 // and returns a list of all of the subclasses of the inputted symptoms
-function subclasses(inputsymptoms, inheritance) {
+function subclasses(input_symptoms, inheritance) {
   let subclasses = [];
   for (i of inheritance) {
-    if (inputsymptoms.includes(i[0]) && !subclasses.includes(i[1])) {
+    if (input_symptoms.includes(i[0]) && !subclasses.includes(i[1])) {
       subclasses.push(i[1]);
     }
   }
@@ -83,10 +88,10 @@ function subclasses(inputsymptoms, inheritance) {
 
 // this takes the input symptoms of the user and the inheritance map of the Symptoms
 // and returns a list of all of the superclasses of the inputted symptoms
-function superclasses(inputsymptoms, inheritance) {
+function superclasses(input_symptoms, inheritance) {
   let superclasses = [];
   for (i of inheritance) {
-    if (inputsymptoms.includes(i[1]) && !superclasses.includes(i[0])) {
+    if (input_symptoms.includes(i[1]) && !superclasses.includes(i[0])) {
       superclasses.push(i[0]);
     }
   }
@@ -114,9 +119,61 @@ function weights(correlations) {
   }
   return counts;
 }
+
+//Input: Array, contains list of symptoms
+//Output: Top 10 diseases from this test (format yet uknown), to be handled by callback.
+function bayesianTest(input_symptoms,callback){
+  queries.getSymptoms(database, q, getdata_controller).then(function(query) {
+    let symptoms = query;
+
+  queries.getDiseases(database, q, getdata_controller).then(function(query) {
+    let diseases = query;
+
+  queries.getInheritance(database, q, getdata_controller).then(function(query) {
+      let inheritance = query;
+
+  queries.getCorrelations(database, q, getdata_controller).then(function(query) {
+      var correlations = list;
+      // matrix of diseases and corresponding symptoms
+      let matrix = getdata_controller.getCorrelationMatrix(correlations);
+
+      //let weights = bm.weights(correlations);
+
+      // this is a map of diseases and their corresponding likelihood based on the input symptoms
+      var posterior = likelihood(input_symptoms, database, getdata_controller, matrix, inheritance, symptoms);
+
+      let totalsymptomcount = 0;
+      let prior = 1;
+      let values = []
+
+      for (const [key, value] of posterior.entries()) {
+        values.push(key);
+      }
+
+      values.sort(function(a, b){  return b - a;});
+
+      // Axel'ls rambling: The posterior object is a dictionary which contains the
+      // likelihood as key and the disease (Orhpanet number? name?) as value.
+      // The keys are then sorted in descending order.
+      // Following this, we pull the top 10 diseases in order.
+      // we print the 10 most likely diseases
+
+      var disease_list = [];
+      for (var i=0; i< 10; i++) {
+        console.log(diseases.get(posterior.get(values[i])));
+        disease_list.push(diseases.get(posterior.get(values[i])))
+      }
+      callback(disease_list)
+    });
+  });
+  });
+  });
+}
+
 module.exports = {
   likelihood,
   weights,
   superclasses,
-  subclasses
+  subclasses,
+  bayesianTest
 };

@@ -3,40 +3,41 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+      .form {
+         margin-bottom: 25px;
+      }
+    </style>
   </head>
   <body>
     <h1><%= title %></h1>
-    <form method="post" action="/">
-      Please enter a list of symptoms separated by a comma. Example: "pain, fever".
-      <input type="text" name="symptoms"/>
-      <br/>
-      If you know the OrphaNet ID of the disease you are testing against, enter it here:
-      <input type="text" name="disease_number"/>
-      <br/>
-      <input type="submit" value="Submit"/>
+    <form class="form" method="post" action="/search">
+      <div class="form-group">
+        <label for="symptoms">Symptoms</label>
+        <input type="text" class="form-control" name="symptoms" aria-describedby="emailHelp">
+        <small class="form-text text-muted">List of symptoms separated by a comma. Example: Pain,Fever</small>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">Test disease OrphaID</label>
+        <input type="text" class="form-control" name="disease_number">
+        <small class="form-text text-muted">OrphaNet ID of disease being tested. Leave blank if none.</small>
+      </div>
+
+      <button type="submit" value="submit" class="btn btn-primary">Submit</button>
     </form>
-    <% if(typeof diseases != 'undefined') { %>
-      <table>
-        <tr>
-          <th>Rank</th>
-          <th>Disease Name</th>
-          <th>Associated Symptoms</th>
-        </tr>
-        <% for(var i=0; i<diseases.length; i++) {%>
-          <tr>
-            <th><%= i+1 %></th>
-            <th><%= diseases[i] %></th>
-          </tr>
-        <% } %>
-      </table>
-    <% } %>
-    <p>
-      The disease you are testing has the following symptoms associated to it:
-      <ul>
-        <% for(var i=0; i< test_disease.length; i++) {%>
-          <li><%= test_disease[i] %></li>
-        <% } %>
-      </ul>
-    </p>
+    <form class="form" method="post" action="/cureus-search">
+      <div class="form-group">
+        <label for="cureus_url"> If searching from Cureus article, URL here. </label>
+        <input type="text" class="form-control" name="cureus_url" aria-describedby="cureusUrl">
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">Test disease OrphaID</label>
+        <input type="text" class="form-control" name="disease_number">
+        <small class="form-text text-muted">OrphaNet ID of disease being tested. Leave blank if none.</small>
+      </div>
+
+      <button type="submit" value="submit" class="btn btn-primary">Submit</button>
+    </form>
   </body>
 </html>

@@ -2,10 +2,10 @@ var cheerio = require('cheerio');
 var request = require('request');
 // var read = require('node-readability');
 var urlParser = require('url');
-var queries = require('./Algorithm/queries');
+var queries = require('../Algorithm/queries');
 var q = require('q');
-var database = require('./Algorithm/db_connection')
-var getdata_controller = require('./Algorithm/getData');
+var database = require('../Algorithm/db_connection')
+var getdata_controller = require('../Algorithm/getData');
 
 //Very specific scraper, but the code is flexible. Load the 'Case Presentation' section
 //of a Cureus article.
@@ -52,3 +52,5 @@ scraper.scrape(function(error,data){
     console.log(returnsymptoms)
   })
 })
+
+module.exports = {Scraper,getSymptomsList}

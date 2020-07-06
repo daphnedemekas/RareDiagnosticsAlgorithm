@@ -1,0 +1,9 @@
+//This just a text file at the moment to hold some queries.
+
+#To select disease name from orpha number.
+SELECT Disease.disease_name FROM Correlation INNER JOIN Disease ON Correlation.disease_orpha=Disease.orpha_number;
+
+#To select disease name and symptoms from orpha_id:
+SELECT Disease.disease_name, Symptom.symptom_name FROM Correlation INNER JOIN Disease ON Correlation.disease_orpha=Disease.orpha_number INNER JOIN Symptom ON Correlation.symptom_id = Symptom.id;
+
+SELECT * FROM SymptomInheritance INNER JOIN Symptoms ON SymptomInheritance.superclass_id=Symptom.id WHERE superclass_id='HP:0002083';

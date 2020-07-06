@@ -2,7 +2,7 @@ var queries = require('./BayesianAlgorithm/queries');
 var q = require('q');
 var database = require('./BayesianAlgorithm/db_connection')
 var getdata_controller = require('./BayesianAlgorithm/getData');
-var bayesionmodel = require('./BayesianAlgorithm/bayesionmodel');
+var bayesian = require('./BayesianAlgorithm/bayesian');
 var distance = require('euclidean-distance')
 
 let inputsymptoms = ['Arthritis', 'Fever', 'Anorexia', 'Immunodeficiency', 'Arthralgia', 'Erythema', 'Neutrophilia', 'Hepatitis','Pharyngitis']

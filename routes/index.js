@@ -4,13 +4,13 @@ var queries = require('../BayesianAlgorithm/queries');
 var q = require('q');
 var database = require('../BayesianAlgorithm/db_connection')
 var getdata_controller = require('../BayesianAlgorithm/getData');
-var bayesionmodel = require('../BayesianAlgorithm/bayesionmodel');
+var bayesian = require('../BayesianAlgorithm/bayesian');
 var articlescraper = require('../Testing/article_scraper');
 var Algorithm =  require('../controllers/Algorithm')
 
 // Initialize each algorithm
-let bayesian_algorithm = new Algorithm("Bayesian Algorithm", bayesionmodel.bayesianAlgorithm);
-let other_algorithm = new Algorithm("Other Algorithm", bayesionmodel.bayesianAlgorithm)
+let bayesian_algorithm = new Algorithm("Bayesian Algorithm", bayesian.bayesianAlgorithm);
+let other_algorithm = new Algorithm("Other Algorithm", bayesian.bayesianAlgorithm)
 
 //IMPORTANT: This is where we register our algorithms
 let test_algorithms = [bayesian_algorithm, other_algorithm];
@@ -70,7 +70,7 @@ router.post('/search',function(req,res,next){
 
   //We perform the Bayesian test against this data. Bayesian test returns a list of the
   //top 10 disease names which matched as an array (ordered by rank).
-  bayesionmodel.bayesianTest(symptoms,function(disease_list){
+  bayesian.bayesianTest(symptoms,function(disease_list){
     //If we are provided a test disease, pull the information associated with it.
     if (disease_orpha){
       let query = "SELECT Disease.disease_name, Symptom.symptom_name FROM Correlation INNER JOIN Disease ON Correlation.disease_orpha=Disease.orpha_number INNER JOIN Symptom ON Correlation.symptom_id = Symptom.id WHERE disease_orpha="+disease_orpha;
@@ -129,7 +129,7 @@ router.post('/cureus-search', function(req,res,next){
           }
         }
 
-        bayesionmodel.bayesianTest(return_symptoms,function(disease_list){
+        bayesian.bayesianTest(return_symptoms,function(disease_list){
           //If we are provided a test disease, pull the information associated with it.
           if (disease_orpha){
             let query = "SELECT Disease.disease_name, Symptom.symptom_name FROM Correlation INNER JOIN Disease ON Correlation.disease_orpha=Disease.orpha_number INNER JOIN Symptom ON Correlation.symptom_id = Symptom.id WHERE disease_orpha="+disease_orpha;

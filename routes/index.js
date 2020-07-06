@@ -6,12 +6,55 @@ var database = require('../Algorithm/db_connection')
 var getdata_controller = require('../Algorithm/getData');
 var bayesionmodel = require('../Algorithm/bayesionmodel');
 var articlescraper = require('../Testing/article_scraper');
+var Algorithm =  require('../controllers/Algorithm')
+
+// Initialize each algorithm
+let bayesian_algorithm = new Algorithm("Bayesian Algorithm", bayesionmodel.bayesianAlgorithm);
+let other_algorithm = new Algorithm("Other Algorithm", bayesionmodel.bayesianAlgorithm)
+
+//IMPORTANT: This is where we register our algorithms
+let test_algorithms = [bayesian_algorithm, other_algorithm];
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Algorithm Test Platform', symptoms: "", test_disease:"" });
 });
 
+router.post('/testsearch',function(req,res,next){
+  disease_orpha = req.body.disease_number
+  var symptoms = req.body.symptoms.split(",");
+
+  //Quickly sanitize input: get rid of spaces.
+  //TODO: Make all lowercase and figure out how to make this work with algorithm.
+  symptoms = symptoms.map(symptom => {return symptom.trim()})
+
+  //This runs each algorithm and waits for all of them to be done. 
+  Promise.all([bayesian_algorithm.rank(symptoms), other_algorithm.rank(symptoms)])
+  .then(results => {
+    console.log(results);
+    var test_data = {test_units:[]};
+    for (var i=0; i < results.length; i++){
+      test_data.test_units.push({
+        from_algorithm: test_algorithms[i].name,
+        matched_diseases: results[i]
+      })
+    }
+    console.log(test_data)
+    res.render('results',{
+      title: 'Search Results',
+      symptoms: req.body.symptoms,
+      ...test_data,
+    });
+  })
+})
+
+  // bayesian_algorithm.rank(symptoms).then(disease_list => {
+  //   res.render('results',{
+  //     title: 'Search Results',
+  //     symptoms: req.body.symptoms,
+  //     diseases: disease_list,
+  //     test_disease:""});
+  // })
 
 //This route is the one which is hit by a POST request for the search.
 //Expected POST Input:

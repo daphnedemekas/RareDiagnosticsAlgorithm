@@ -122,7 +122,7 @@ function weights(correlations) {
 
 //Input: Array, contains list of symptoms
 //Output: Top 10 diseases from this test (format yet uknown), to be handled by callback.
-function bayesianTest(input_symptoms,callback){
+const bayesianAlgorithm = (input_symptoms) => new Promise((resolve) => {
   queries.getSymptoms(database, q, getdata_controller).then(function(query) {
     let symptoms = query;
 
@@ -163,17 +163,21 @@ function bayesianTest(input_symptoms,callback){
         console.log(diseases.get(posterior.get(values[i])));
         disease_list.push(diseases.get(posterior.get(values[i])))
       }
-      callback(disease_list)
+      resolve(disease_list)
     });
   });
   });
   });
-}
+})
+
+//TODO: Delete this (just don't want things to break)
+var bayesianTest = function(){}
 
 module.exports = {
   likelihood,
   weights,
   superclasses,
   subclasses,
-  bayesianTest
+  bayesianTest,
+  bayesianAlgorithm
 };

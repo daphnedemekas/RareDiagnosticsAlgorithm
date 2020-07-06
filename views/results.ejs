@@ -21,6 +21,23 @@
         </ul>
       </td>
     <% } %>
+    <% if(typeof test_units != 'undefined') { %>
+      <% for(var i=0; i<test_units.length; i++) {%>
+        <% let diseases = test_units[i].matched_diseases %>
+        <table class="table table-bordered">
+          <tr>
+            <th>Rank</th>
+            <th>Disease Name</th>
+          </tr>
+          <% for(var j=0; j<diseases.length; j++) {%>
+            <tr>
+              <th><%= j+1 %></th>
+              <th><%= diseases[j] %></th>
+            </tr>
+          <% } %>
+        </table>
+      <% } %>
+    <% } %>
     <% if(typeof diseases != 'undefined') { %>
       <td>The search returned the following ranking:
       <table class="table table-bordered">

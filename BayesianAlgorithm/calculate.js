@@ -6,7 +6,7 @@ var database = require('./BayesianAlgorithm/db_connection')
 var getdata_controller = require('./BayesianAlgorithm/getData');
 var bayesionmodel = require('./BayesianAlgorithm/bayesionmodel');
 
-let inputsymptoms =["Abnormality of skin pigmentation", 'Skin rash', 'Erythematous papule', "Abnormality of the nail", "Macule", 'Erythema', 'White papule', "Recurrent skin infection", 'Maceration', 'Hyperkeratotic papule', 'Acantholysis', 'Papule']
+let inputsymptoms =['Arthritis', 'Fever', 'Anorexia', 'Immunodeficiency', 'Arthralgia', 'Erythema', 'Neutrophilia', 'Hepatitis','Pharyngitis']
 queries.getSymptoms(database, q, getdata_controller).then(function(query) {
   let symptoms = query;
 

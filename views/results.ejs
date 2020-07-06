@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p> You are searching for the following symptoms: <%= symptoms %>.</p>
+    <table class="table">
+    <tr>
+    <% if (typeof test_disease_name != 'undefined') { %>
+      <td>
+        You are testing for <%= test_disease_name %>. The symptoms associated are:
+        <ul>
+          <% for(var i=0; i< test_disease_symptoms.length; i++) {%>
+            <li><%= test_disease_symptoms[i] %></li>
+          <% } %>
+        </ul>
+      </td>
+    <% } %>
+    <% if(typeof diseases != 'undefined') { %>
+      <td>The search returned the following ranking:
+      <table class="table table-bordered">
+        <tr>
+          <th>Rank</th>
+          <th>Disease Name</th>
+        </tr>
+        <% for(var i=0; i<diseases.length; i++) {%>
+          <tr>
+            <th><%= i+1 %></th>
+            <th><%= diseases[i] %></th>
+          </tr>
+        <% } %>
+      </table>
+      </td>
+    <% } else {%>
+    <td>It seems there was a problem in the search. Please try again. </td>
+    <% } %>
+    </tr>
+    </table>
+  </body>
+</html>

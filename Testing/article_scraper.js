@@ -2,10 +2,10 @@ var cheerio = require('cheerio');
 var request = require('request');
 // var read = require('node-readability');
 var urlParser = require('url');
-var queries = require('../Algorithm/queries');
+var queries = require('../BayesianAlgorithm/queries');
 var q = require('q');
-var database = require('../Algorithm/db_connection')
-var getdata_controller = require('../Algorithm/getData');
+var database = require('../BayesianAlgorithm/db_connection')
+var getdata_controller = require('../BayesianAlgorithm/getData');
 
 //Very specific scraper, but the code is flexible. Load the 'Case Presentation' section
 //of a Cureus article.
@@ -29,6 +29,7 @@ Scraper.prototype.scrape = function(callback){
           var $ = cheerio.load(data);
           var article = $("div.article-content-body:nth-child(4)");
           var casepresentation = article.text();
+          console.log(article.text())
           callback(null,casepresentation);
         }
         else {

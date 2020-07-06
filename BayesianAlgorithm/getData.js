@@ -1,12 +1,12 @@
 
 // this function makes a general query to the SQL database
 // returns a promise
-function makeQuery(db, q, query_str, element1, element2, element3)
+function makeQuery(database, q, query_str, element1, element2, element3)
 {
    list = []
    var deferred = q.defer(); // Use Q
 
-  var quer = db.query(query_str, function (err, rows, fields) {
+  var quer = database.query(query_str, function (err, rows, fields) {
     //if (err) throw err;
     if (err) {
         //throw err;

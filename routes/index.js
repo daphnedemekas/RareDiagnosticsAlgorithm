@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var queries = require('../Algorithm/queries');
+var queries = require('../BayesianAlgorithm/queries');
 var q = require('q');
-var database = require('../Algorithm/db_connection')
-var getdata_controller = require('../Algorithm/getData');
-var bayesionmodel = require('../Algorithm/bayesionmodel');
+var database = require('../BayesianAlgorithm/db_connection')
+var getdata_controller = require('../BayesianAlgorithm/getData');
+var bayesionmodel = require('../BayesianAlgorithm/bayesionmodel');
 var articlescraper = require('../Testing/article_scraper');
 var Algorithm =  require('../controllers/Algorithm')
 
@@ -28,7 +28,7 @@ router.post('/testsearch',function(req,res,next){
   //TODO: Make all lowercase and figure out how to make this work with algorithm.
   symptoms = symptoms.map(symptom => {return symptom.trim()})
 
-  //This runs each algorithm and waits for all of them to be done. 
+  //This runs each algorithm and waits for all of them to be done.
   Promise.all([bayesian_algorithm.rank(symptoms), other_algorithm.rank(symptoms)])
   .then(results => {
     console.log(results);

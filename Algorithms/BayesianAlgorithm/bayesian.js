@@ -8,28 +8,13 @@ var Disease = db.Disease;
 var Symptom = db.Symptom;
 const {Op} = require('sequelize');
 
-// Just a wrapper to make the code not too crowded.
-async function getParentSymptoms(input_symptoms) {
-  return Symptom.findAll({
-    include: {
-      model: Symptom,
-      as:   'Children',
-      where: {
-        symptom_name:{
-          [Op.in]: input_symptoms
-        }
-      }
-    }
-  })
-}
-
 // Input symptoms by name: ['Pain','Fever']
 // Returns: array of score/disease tuple: [{disease: Disease, score: float}]
 //TODO: Not case sensitive
 async function likelihoodCalculator(input_symptoms) {
   //The results array we return later
   var results = []
-  var parent_symptoms = await getParentSymptoms(input_symptoms);
+  var parent_symptoms = await db.getParentSymptoms(input_symptoms);
 
   //We put this in a variable for later use.
   let number_of_input_symptoms = parseFloat(input_symptoms.length)

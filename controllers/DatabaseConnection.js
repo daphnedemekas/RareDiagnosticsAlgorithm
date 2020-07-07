@@ -103,6 +103,19 @@ Symptom.belongsToMany(Symptom,{through: 'SymptomInheritance', as: 'Children', fo
 
 Symptom.belongsToMany(Symptom,{through: 'SymptomInheritance', as: 'Parents', foreignKey:'subclass_id', onDelete: 'SET NULL'});
 
+async function getParentSymptoms(input_symptoms) {
+  return Symptom.findAll({
+    include: {
+      model: Symptom,
+      as:   'Children',
+      where: {
+        symptom_name:{
+          [Op.in]: input_symptoms
+        }
+      }
+    }
+  })
+}
 
 //Test connection
 async function testConnection(){
@@ -137,5 +150,6 @@ module.exports = {
     Symptom: Symptom,
     Correlation: Correlation,
     SymptomInheritance: SymptomInheritance,
+    getParentSymptoms,
     Op: sequelize.Op
 };

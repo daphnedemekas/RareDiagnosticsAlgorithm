@@ -130,6 +130,20 @@ TestCase.belongsTo(Disease)
 
 sequelize.sync({alter: true})
 
+async function getParentSymptoms(input_symptoms) {
+  return Symptom.findAll({
+    include: {
+      model: Symptom,
+      as:   'Children',
+      where: {
+        symptom_name:{
+          [Op.in]: input_symptoms
+        }
+      }
+    }
+  })
+}
+
 //Test connection
 async function testConnection(){
   await sequelize.authenticate();
@@ -149,5 +163,6 @@ module.exports = {
     Correlation: Correlation,
     SymptomInheritance: SymptomInheritance,
     TestCase: TestCase,
+    getParentSymptoms,
     Op: sequelize.Op
 };

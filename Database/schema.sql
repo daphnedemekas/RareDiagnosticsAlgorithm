@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS Symptom;
 DROP TABLE IF EXISTS Disease;
 
 
-CREATE TABLE Disease (
+CREATE TABLE Diseases (
     orpha_number VARCHAR(10),
     disease_name VARCHAR(255),
     type VARCHAR(100),
@@ -15,13 +15,13 @@ CREATE TABLE Disease (
     PRIMARY KEY (orpha_number)
 );
 
-CREATE TABLE Symptom(
+CREATE TABLE Symptoms(
     id VARCHAR(255),
     symptom_name VARCHAR(255),
     definition TEXT,
     PRIMARY KEY (id)
 );
-CREATE TABLE Correlation(
+CREATE TABLE Correlations(
     disease_orpha VARCHAR(10),
     symptom_id VARCHAR(255),
     frequency FLOAT(3),
@@ -29,7 +29,7 @@ CREATE TABLE Correlation(
     FOREIGN KEY (symptom_id) REFERENCES Symptom(id) ON DELETE CASCADE
 );
 
-CREATE TABLE SymptomInheritance(
+CREATE TABLE SymptomInheritances(
     superclass_id VARCHAR(255),
     subclass_id VARCHAR(255),
     FOREIGN KEY (superclass_id) REFERENCES Symptom(id) ON DELETE SET NULL,

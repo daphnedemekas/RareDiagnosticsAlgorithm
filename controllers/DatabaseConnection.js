@@ -14,7 +14,6 @@ const sequelize = new Sequelize('RareDiagnostics', process.env.SQL_USER, process
 
   // Avoid auto-pluralization
   define: {
-    freezeTableName: true,
     timestamps: false
   }
 });
@@ -93,6 +92,26 @@ const SymptomInheritance = sequelize.define('SymptomInheritance', {
     }
   }
 })
+
+const TestCase = sequelize.define('TestCase',{
+  origin: {
+    type: DataTypes.STRING
+  },
+
+  origin_url: {
+    type: DataTypes.STRING(1024)
+  },
+
+  disease_orpha: {
+    type: DataTypes.STRING
+  },
+
+  symptoms_list: {
+    type: DataTypes.STRING(1024)
+  }
+})
+
+TestCase.sync()
 
 //Define associations.
 Disease.belongsToMany(Symptom, {through: 'Correlation', foreignKey: 'disease_orpha'});

@@ -4,59 +4,51 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+      th {
+        font-weight: normal;
+      }
 
+      .rank-cell{
+        font-weight: bold;
+      }
+
+      .light-green {
+        background: rgba(23, 227, 53, 0.5);
+      }
+    </style>
   </head>
   <body>
     <h1><%= title %></h1>
     <p> You are searching for the following symptoms: <%= symptoms %>.</p>
+    <% if (typeof test_disease != 'undefined') { %>
+      <p>
+        You are testing for <%= test_disease.disease_name %>.
+      <p>
+    <% } %>
     <table class="table">
     <tr>
-    <% if (typeof test_disease_name != 'undefined') { %>
-      <td>
-        You are testing for <%= test_disease_name %>. The symptoms associated are:
-        <ul>
-          <% for(var i=0; i< test_disease_symptoms.length; i++) {%>
-            <li><%= test_disease_symptoms[i] %></li>
-          <% } %>
-        </ul>
-      </td>
-    <% } %>
     <% if(typeof test_units != 'undefined') { %>
       <% for(var i=0; i<test_units.length; i++) {%>
         <% let diseases = test_units[i].matched_diseases %>
-        <table class="table table-bordered">
+        <table class="table table-sm table-bordered">
           <tr>
             <th>Rank</th>
             <th>Disease Name</th>
+            <th># of Symptoms</th>
+            <th>Score</th>
           </tr>
           <% for(var j=0; j<diseases.length; j++) {%>
-            <tr>
-              <th><%= j+1 %></th>
-              <th><%= diseases[j] %></th>
+            <tr class="<%= diseases[j].is_tested ? 'light-green' : ''%>" >
+              <th class="rank-cell"><%= j+1 %></th>
+              <th><%= diseases[j].disease_name %></th>
+              <th><%= diseases[j].Symptoms.length %></th>
+              <th><%= diseases[j].score %></th>
             </tr>
           <% } %>
         </table>
       <% } %>
     <% } %>
-    <% if(typeof diseases != 'undefined') { %>
-      <td>The search returned the following ranking:
-      <table class="table table-bordered">
-        <tr>
-          <th>Rank</th>
-          <th>Disease Name</th>
-        </tr>
-        <% for(var i=0; i<diseases.length; i++) {%>
-          <tr>
-            <th><%= i+1 %></th>
-            <th><%= diseases[i] %></th>
-          </tr>
-        <% } %>
-      </table>
-      </td>
-    <% } else {%>
-    <td>It seems there was a problem in the search. Please try again. </td>
-    <% } %>
-    </tr>
     </table>
   </body>
 </html>

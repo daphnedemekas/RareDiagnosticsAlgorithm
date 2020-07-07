@@ -59,6 +59,6 @@ app.use(function(err, req, res, next) {
 
 //Just calling require will run the code automatically. This code is run every time
 // the server is started.
-var bayesianTest = require('./Algorithms/BayesianAlgorithm/bayesiantest')
-
+//var bayesianTest = require('./Algorithms/BayesianAlgorithm/bayesiantest')
+var distanceTest = require('./Algorithms/test.js')
 module.exports = app;

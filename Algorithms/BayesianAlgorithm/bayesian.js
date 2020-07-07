@@ -36,7 +36,7 @@ async function likelihoodCalculator(input_symptoms) {
 
   //Pull every disease into memory. TODO: Make request a bit finer.
   var diseases = await Disease.findAll({include: Symptom})
-  //TODO: Take into account superclasses
+
   //We iterate through each disease and calculate their score.
   for (var disease of diseases){
     // Initial some computational variables
@@ -54,7 +54,7 @@ async function likelihoodCalculator(input_symptoms) {
     // }
     for (var symptom of disease.Symptoms) {
       frequency_sum += parseFloat(symptom.Correlation.frequency);
-      
+
       // If one of the input symptoms matches this symptom
       if (input_symptoms.includes(symptom.symptom_name)) {
         matches += 1;

@@ -55,5 +55,10 @@ app.use(function(err, req, res, next) {
   });
 });
 
+//Testing Ground
+
+//Just calling require will run the code automatically. This code is run every time
+// the server is started.
+var bayesianTest = require('./Algorithms/BayesianAlgorithm/bayesiantest')
 
 module.exports = app;

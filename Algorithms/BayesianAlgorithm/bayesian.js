@@ -6,7 +6,6 @@
 var db = require('../../controllers/DatabaseConnection')
 var Disease = db.Disease;
 var Symptom = db.Symptom;
-const {Op} = require('sequelize');
 
 // Input symptoms by name: ['Pain','Fever']
 // Returns: array of score/disease tuple: [{disease: Disease, score: float}]
@@ -14,10 +13,17 @@ const {Op} = require('sequelize');
 async function likelihoodCalculator(input_symptoms) {
   //The results array we return later
   var results = []
+
   var parent_symptoms = await db.getParentSymptoms(input_symptoms);
+  // number of input symptoms does not includes superclasses
+  let number_of_input_symptoms = parseFloat(input_symptoms.length)
+
+  var parent_symptoms = await db.getParentSymptoms(input_symptoms);
+  var parent_symptoms_names = parent_symptoms.map(sym => sym.symptom_name);
+
+  for (superclass of parent_symptoms_names) {input_symptoms.push(superclass)};
 
   //We put this in a variable for later use.
-  let number_of_input_symptoms = parseFloat(input_symptoms.length)
 
   //Pull every disease into memory. TODO: Make request a bit finer.
   var diseases = await Disease.findAll({include: Symptom})
@@ -47,16 +53,10 @@ async function likelihoodCalculator(input_symptoms) {
       }
 
       //There is no match, so pull parent symptoms and see if they might match.
-      else {
-        var parent_symptoms_names = parent_symptoms.map(sym => sym.symptom_name);
-        if (parent_symptoms_names.includes(symptom.symptom_name)){
-          matches += 1;
-          frequency += parseFloat(symptom.Correlation.frequency);
-        }
+
       }
 
       //else if: deal with subclasses
-    }
 
     // If there was at least oen symptom match
     if (matches != 0) {

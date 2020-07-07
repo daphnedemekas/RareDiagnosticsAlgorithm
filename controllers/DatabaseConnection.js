@@ -14,7 +14,6 @@ const sequelize = new Sequelize('RareDiagnostics', process.env.SQL_USER, process
 
   // Avoid auto-pluralization
   define: {
-    freezeTableName: true,
     timestamps: false
   }
 });
@@ -94,6 +93,26 @@ const SymptomInheritance = sequelize.define('SymptomInheritance', {
   }
 })
 
+const TestCase = sequelize.define('TestCase',{
+  origin: {
+    type: DataTypes.STRING
+  },
+
+  origin_url: {
+    type: DataTypes.STRING(1024)
+  },
+
+  disease_orpha: {
+    type: DataTypes.STRING
+  },
+
+  symptoms_list: {
+    type: DataTypes.STRING(1024)
+  }
+})
+
+TestCase.sync()
+
 //Define associations.
 Disease.belongsToMany(Symptom, {through: 'Correlation', foreignKey: 'disease_orpha'});
 Symptom.belongsToMany(Disease, {through: 'Correlation', foreignKey: 'symptom_id'});
@@ -104,6 +123,21 @@ Symptom.belongsToMany(Symptom,{through: 'SymptomInheritance', as: 'Children', fo
 Symptom.belongsToMany(Symptom,{through: 'SymptomInheritance', as: 'Parents', foreignKey:'subclass_id', onDelete: 'SET NULL'});
 
 async function getParentSymptoms(input_symptoms) {
+  return Symptom.findAll({
+    include: {
+      model: Symptom,
+      as:   'Children',
+      where: {
+        symptom_name:{
+          [Op.in]: input_symptoms
+        }
+      }
+    }
+  })
+}
+
+async function getParentSymptoms(input_symptoms) {
+  const {Op} = require('sequelize');
   return Symptom.findAll({
     include: {
       model: Symptom,

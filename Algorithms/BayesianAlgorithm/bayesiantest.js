@@ -6,13 +6,9 @@ var bayesian = require('./bayesian');
 let input_symptoms = ['Arthritis','Fever','Anorexia','Immunodeficiency','Arthralgia','Erythema','Neutrophilia','Hepatitis','Pharyngitis']
 
 bayesian.likelihoodCalculator(input_symptoms).then(ranking => {
-  console.log("Raw Results:")
-  console.log(ranking)
   var ordered_ranking = ranking.sort(function(a,b){return b.score - a.score})
   var results = []
   for (var i=0; i < 10; i++){
     results.push({name: ordered_ranking[i].disease.disease_name,score: ordered_ranking[i].score})
   }
-  console.log('Bayesian Test Results')
-  console.log(results)
 })

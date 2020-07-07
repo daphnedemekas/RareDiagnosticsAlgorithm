@@ -50,7 +50,7 @@ const Symptom = sequelize.define('Symptom',{
 
   definition: {
     type: DataTypes.TEXT
-  }
+  },
 })
 
 const Correlation = sequelize.define('Correlation',{
@@ -98,20 +98,20 @@ const TestCase = sequelize.define('TestCase',{
     type: DataTypes.STRING
   },
 
+  //1 test case per URL
   origin_url: {
-    type: DataTypes.STRING(1024)
+    type: DataTypes.STRING(1024),
+    unique: true,
   },
 
   disease_orpha: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
   },
 
   symptoms_list: {
     type: DataTypes.STRING(1024)
   }
 })
-
-TestCase.sync()
 
 //Define associations.
 Disease.belongsToMany(Symptom, {through: 'Correlation', foreignKey: 'disease_orpha'});
@@ -122,26 +122,18 @@ Symptom.belongsToMany(Symptom,{through: 'SymptomInheritance', as: 'Children', fo
 
 Symptom.belongsToMany(Symptom,{through: 'SymptomInheritance', as: 'Parents', foreignKey:'subclass_id', onDelete: 'SET NULL'});
 
+TestCase.belongsToMany(Symptom, {through: 'TestCasesSymptomsAssocations', foreignKey: 'id'})
+Symptom.belongsToMany(TestCase,{through: 'TestCasesSymptomsAssocations'})
+
+Disease.hasMany(TestCase)
+TestCase.belongsTo(Disease)
+
+sequelize.sync({alter: true})
 
 //Test connection
 async function testConnection(){
   await sequelize.authenticate();
   console.log('Connection to RareDiagnostics DB has been established successfully.');
-  // const test_disease = await Disease.findOne({
-  //   where:{
-  //     orpha_number: '564'
-  //   },
-  //   include: Symptom
-  // })
-  // console.log(test_disease.disease_name);
-  // console.log(test_disease.Symptoms)
-  // let symptoms = await test_disease.getSymptoms().catch((err)=> console.log(err))
-
-  // const migrainewaura = await Symptom.findOne({where: {id: 'HP:0002083'}})
-  // let parent_symptoms = await migrainewaura.getParent();
-  // console.log(migrainewaura)
-  // console.log(parent_symptoms)
-  // console.log(symptoms[0].toJSON())
 }
 try {
   testConnection()
@@ -156,5 +148,6 @@ module.exports = {
     Symptom: Symptom,
     Correlation: Correlation,
     SymptomInheritance: SymptomInheritance,
+    TestCase: TestCase,
     Op: sequelize.Op
 };

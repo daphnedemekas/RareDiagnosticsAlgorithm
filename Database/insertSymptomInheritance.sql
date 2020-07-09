@@ -1,6 +1,6 @@
 USE RareDiagnostics;
 
-INSERT INTO SymptomInheritance VALUES('HP:0001507', 'HP:0000002'),
+INSERT INTO SymptomInheritances VALUES('HP:0001507', 'HP:0000002'),
 ('HP:0000107', 'HP:0000003'),
 ('HP:0000001', 'HP:0000005'),
 ('HP:0000005', 'HP:0000006'),

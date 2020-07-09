@@ -1,10 +1,11 @@
 CREATE DATABASE IF NOT EXISTS RareDiagnostics;
 USE RareDiagnostics;
 
-DROP TABLE IF EXISTS Correlation;
-DROP TABLE IF EXISTS SymptomInheritance;
-DROP TABLE IF EXISTS Symptom;
-DROP TABLE IF EXISTS Disease;
+DROP TABLE IF EXISTS Correlations;
+DROP TABLE IF EXISTS SymptomInheritances;
+DROP TABLE IF EXISTS DiseaseSynonyms;
+DROP TABLE IF EXISTS Symptoms;
+DROP TABLE IF EXISTS Diseases;
 
 
 CREATE TABLE Diseases (
@@ -27,6 +28,12 @@ CREATE TABLE Correlations(
     frequency FLOAT(3),
     FOREIGN KEY (disease_orpha) REFERENCES Disease(orpha_number) ON DELETE CASCADE,
     FOREIGN KEY (symptom_id) REFERENCES Symptom(id) ON DELETE CASCADE
+);
+
+CREATE TABLE DiseaseSynonyms(
+  disease_orpha VARCHAR(10),
+  synonym VARCHAR(255),
+  FOREIGN KEY (disease_orpha) REFERENCES Disease(orpha_number) ON DELETE CASCADE
 );
 
 CREATE TABLE SymptomInheritances(

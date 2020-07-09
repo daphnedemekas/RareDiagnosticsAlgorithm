@@ -15,12 +15,16 @@ generalroot = generaltree.getroot()
 #functionalconsequences_tree = ET.parse(urlopen("http://www.orphadata.org/data/xml/en_funct_consequences.xml"))
 #fc_root = functionalconsequences_tree.getroot()
 
-insert = "INSERT INTO Disease VALUES"
+#insert = "INSERT INTO Diseases VALUES"
+insert_synonym = "INSERT INTO DiseaseSynonyms VALUES"
 
 if __name__ == "__main__":
-    insert_file = "USE RareDiagnostics;\n\n"
-
+    #insert_file = "USE RareDiagnostics;\n\n"
+    insert_synonym_file = "USE RareDiagnostics;\n\n"
     for disorder in generalroot[1]:
+        synonyms = []
+        for synonym in disorder[4]:
+            synonyms.append(synonym.text)
         orpha = disorder[0].text
         name = disorder[2].text
         type = disorder[5][0].text
@@ -30,8 +34,16 @@ if __name__ == "__main__":
             definition = "no definition available"
 
         insert_row = "('{}', '{}', '{}', '{}'),".format(orpha, name.replace("'", "`"), type.replace("'", "`"), definition.replace("'", "`"))
-        insert += insert_row + "\n"
-    insert_file += insert + ";"
+        for synonym in synonyms:
+            insert_synonym_row = "('{}','{}'),".format(orpha, synonym.replace("'", "`"))
+            insert_synonym  += insert_synonym_row + "\n"
 
-    with open("Database/insertDiseases.sql", "w+") as file:
-         file.write(insert_file)
+    insert_synonym_file += insert_synonym + ";"
+        #insert += insert_row + "\n"
+
+    #insert_file += insert + ";"
+
+    #with open("Database/insertDiseases.sql", "w+") as file:
+    #     file.write(insert_file)
+    with open("Database/insertDiseaseSynonyms.sql", "w+") as file:
+        file.write(insert_synonym_file)

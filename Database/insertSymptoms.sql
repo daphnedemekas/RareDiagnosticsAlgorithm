@@ -1,6 +1,6 @@
 USE RareDiagnostics;
 
-INSERT INTO Symptom VALUES('HP:0000001', 'All', ''),
+INSERT INTO Symptoms VALUES('HP:0000001', 'All', ''),
 ('HP:0000002', 'Abnormality of body height', 'Deviation from the norm of height with respect to that which is expected according to age and gender norms.'),
 ('HP:0000003', 'Multicystic kidney dysplasia', 'Multicystic dysplasia of the kidney is characterized by multiple cysts of varying size in the kidney and the absence of a normal pelvicaliceal system. The condition is associated with ureteral or ureteropelvic atresia, and the affected kidney is nonfunctional.'),
 ('HP:0000005', 'Mode of inheritance', 'The pattern in which a particular genetic trait or disorder is passed from one generation to the next.'),

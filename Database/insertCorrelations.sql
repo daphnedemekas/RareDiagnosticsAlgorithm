@@ -1,6 +1,6 @@
 USE RareDiagnostics;
 
-INSERT INTO Correlation VALUES('61','HP:0000158','0.895'),
+INSERT INTO Correlations VALUES('61','HP:0000158','0.895'),
 ('61','HP:0000280','0.895'),
 ('61','HP:0000365','0.895'),
 ('61','HP:0000518','0.895'),
